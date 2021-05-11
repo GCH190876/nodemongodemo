@@ -9,7 +9,6 @@ app.set('view engine', 'hbs');
 
 app.use(express.static(__dirname + "/views"));
 
-//var url = 'mongodb://localhost:27017'
 var url = 'mongodb+srv://admin:admin@cluster0.pfmb3.mongodb.net';
 var MongoClient = require('mongodb').MongoClient;
 
