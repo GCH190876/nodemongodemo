@@ -42,13 +42,9 @@ app.get('/delete', async (req, res) => {
 })
 
 app.get("/addproduct", function (req, res) {
-    var message;
-    if (!req.query.status) message = "";
-    else if (req.query.status == "success") message = "add success";
-    else if (req.query.status == "error") message = "add fail";
-
-    res.render("add", { Title: "add", message: message });
+    res.render("add", { Title: "add"});
 });
+
 app.post("/addproduct", function (req, res) {
     MongoClient.connect(url, async function (error, database) {
         if (error) {
@@ -57,6 +53,7 @@ app.post("/addproduct", function (req, res) {
         }
         var dbo = await database.db("ATN");
         var col = await dbo.collection("Products");
+        
         var name = req.body.name;
         var price = req.body.price;
         var image = req.body.image;
@@ -66,8 +63,8 @@ app.post("/addproduct", function (req, res) {
         if (name != "" && price != "" && image != "") {
             await col.insertOne(data, function (error) {
                 if (error) {
-                    res.redirect("/addproduct?status=error");
-                } else res.redirect("/addproduct?status=success");
+                    res.status(500).send({message:"error"})
+                } res.redirect("/");
             });
         }
 
