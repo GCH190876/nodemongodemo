@@ -30,6 +30,18 @@ app.get("/", function (req, res) {
     });
 });
 
+app.get('/delete', async (req, res) => {
+    let id = req.query.id;
+    var ObjectID = require('mongodb').ObjectID;
+    let condition = { "_id": ObjectID(id) };
+
+    let client = await MongoClient.connect(url);
+    let dbo = client.db("ATN");
+
+    await dbo.collection("Products").deleteOne(condition);
+    res.redirect('/')
+})
+
 app.get("/addproduct", function (req, res) {
     var message;
     if (!req.query.status) message = "";
