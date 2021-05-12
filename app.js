@@ -21,8 +21,8 @@ app.get("/", function (req, res) {
         var dbo = await database.db("ATN");
         var col = await dbo.collection("Products");
         var data = await col.find({}).toArray();
-        if(req.query.search) {
-            data = await col.find({name: req.query.search}).toArray();
+        if(req.query.search) {      //kiểm tra xem có giá trị ?search= nhập vào hay k
+            data = await col.find({name: req.query.search}).toArray(); // chuyển kết quả về dạng array
         }
         console.log(data)
         res.render("index", { Title: "Homepage", Product: data });
@@ -31,7 +31,7 @@ app.get("/", function (req, res) {
 
 app.get('/delete', async (req, res) => {
     let id = req.query.id;
-    var ObjectID = require('mongodb').ObjectID;
+    var ObjectID = require('mongodb').ObjectID;  // chuyển id từ dạng kí tự sang dang object
     let condition = { "_id": ObjectID(id) };
 
     let client = await MongoClient.connect(url);
@@ -60,11 +60,13 @@ app.post("/addproduct", function (req, res) {
         var data = { name: name, price: price, image: image };
         var message;
         console.log(data);
-        if (name != "" && price != "" && image != "") {
+        if (name == "" || price == "" || image == "") {
+            res.status(500).send({message:"error"})
+            } else {
             await col.insertOne(data, function (error) {
                 if (error) {
                     res.status(500).send({message:"error"})
-                } res.redirect("/");
+                } else res.redirect("/");
             });
         }
 
